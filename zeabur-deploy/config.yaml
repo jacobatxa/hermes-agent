@@ -1,0 +1,48 @@
+# Hermes Agent — Cloud Gateway Configuration
+# This config is for Zeabur/cloud deployment (Feishu gateway mode)
+# Local-only features (browser, terminal, file) are disabled by default
+# Enable them only if you mount additional volumes
+
+model:
+  default: "xiaomi/mimo-v2-pro"
+  provider: "nous"
+  base_url: "https://inference-api.nousresearch.com/v1"
+
+agent:
+  max_turns: 90
+  gateway_timeout: 1800
+  restart_drain_timeout: 60
+  tool_use_enforcement: auto
+
+# Disable local-only toolsets in cloud deployment
+# Tools like browser, terminal, file require local filesystem access
+# Enable selectively if you need them
+terminal:
+  backend: local
+  timeout: 180
+
+compression:
+  enabled: true
+  threshold: 0.50
+  target_ratio: 0.20
+
+display:
+  skin: default
+  interim_assistant_messages: true
+  tool_progress: all
+
+channels:
+  feishu:
+    streaming: true
+
+memory:
+  memory_enabled: true
+  user_profile_enabled: true
+
+tts:
+  provider: edge
+  edge:
+    voice: zh-CN-XiaoxiaoNeural
+
+stt:
+  enabled: false

@@ -1,0 +1,43 @@
+# Lightweight Hermes Agent — Feishu Gateway Only
+# Build context: repo root
+# Usage: docker build -f zeabur-deploy/Dockerfile .
+#
+# No Playwright, no Chromium, no Node.js — minimal image size
+FROM python:3.13-slim AS base
+
+ENV PYTHONUNBUFFERED=1
+ENV HERMES_HOME=/opt/data
+
+# System deps (minimal — ripgrep for search_files tool)
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends git ripgrep && \
+    rm -rf /var/lib/apt/lists/*
+
+# Create non-root user
+RUN useradd -m -d /opt/data hermes
+
+# Copy source
+COPY . /opt/hermes
+WORKDIR /opt/hermes
+
+# Install Python dependencies — Feishu gateway only
+RUN pip install --no-cache-dir -e ".[feishu]" && \
+    pip install --no-cache-dir \
+        "croniter>=6.0.0" \
+        "edge-tts>=7.2.7" \
+        "aiohttp>=3.13.3" \
+        "websockets>=14.0"
+
+# Fix ownership
+RUN chown -R hermes:hermes /opt/hermes /opt/data
+
+USER hermes
+
+# Create essential directories
+RUN mkdir -p $HERMES_HOME/{cron,sessions,logs,hooks,memories,skills,skins,plans,workspace,home}
+
+# Entrypoint
+COPY --chown=hermes:hermes --chmod=0755 docker-entrypoint.sh /usr/local/bin/
+
+ENTRYPOINT ["docker-entrypoint.sh"]
+CMD ["hermes", "gateway", "run"]
