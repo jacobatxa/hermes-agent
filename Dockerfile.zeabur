@@ -33,6 +33,12 @@ RUN chown -R hermes:hermes /opt/hermes /opt/data
 
 USER hermes
 
+# Ensure pip-installed scripts are in PATH (for both entrypoint and SSH)
+ENV PATH="/usr/local/bin:${PATH}"
+
+# Create an alias so `hermes` always works (fallback to python3 -m)
+RUN echo 'alias hermes="python3 -m hermes_cli"' >> /opt/data/.bashrc 2>/dev/null || true
+
 # Create essential directories
 RUN mkdir -p $HERMES_HOME/{cron,sessions,logs,hooks,memories,skills,skins,plans,workspace,home}
 
