@@ -53,9 +53,16 @@ if [ ! -f "$HERMES_HOME/.env" ]; then
     cp "$INSTALL_DIR/.env.example" "$HERMES_HOME/.env"
 fi
 
-# config.yaml
-if [ ! -f "$HERMES_HOME/config.yaml" ]; then
+# config.yaml — use zeabur-deploy config if available, always overwrite stale copies
+if [ -f "$INSTALL_DIR/zeabur-deploy/config.yaml" ]; then
+    cp "$INSTALL_DIR/zeabur-deploy/config.yaml" "$HERMES_HOME/config.yaml"
+elif [ ! -f "$HERMES_HOME/config.yaml" ]; then
     cp "$INSTALL_DIR/cli-config.yaml.example" "$HERMES_HOME/config.yaml"
+fi
+
+# Auth: decode AUTH_JSON_B64 env var into auth.json (for OAuth providers like Nous)
+if [ -n "$AUTH_JSON_B64" ] && [ ! -f "$HERMES_HOME/auth.json" ]; then
+    echo "$AUTH_JSON_B64" | base64 -d > "$HERMES_HOME/auth.json" 2>/dev/null || true
 fi
 
 # SOUL.md
