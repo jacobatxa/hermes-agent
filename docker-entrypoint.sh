@@ -9,13 +9,28 @@ export PATH="/usr/local/bin:$PATH"
 
 mkdir -p "$HERMES_HOME"/{cron,sessions,logs,hooks,memories,skills,skins,plans,workspace,home}
 
-# Copy default config if not present
+# ALWAYS copy the correct config from the image (overwrite stale volume copies)
+if [ -f "$INSTALL_DIR/zeabur-deploy/config.yaml" ]; then
+    cp "$INSTALL_DIR/zeabur-deploy/config.yaml" "$HERMES_HOME/config.yaml"
+    echo "[entrypoint] config.yaml synced from image"
+elif [ ! -f "$HERMES_HOME/config.yaml" ]; then
+    cp "$INSTALL_DIR/cli-config.yaml.example" "$HERMES_HOME/config.yaml" 2>/dev/null || true
+fi
+
+# Copy .env if not present
 if [ ! -f "$HERMES_HOME/.env" ]; then
     cp "$INSTALL_DIR/.env.example" "$HERMES_HOME/.env" 2>/dev/null || true
 fi
 
-if [ ! -f "$HERMES_HOME/config.yaml" ]; then
-    cp "$INSTALL_DIR/cli-config.yaml.example" "$HERMES_HOME/config.yaml" 2>/dev/null || true
+# Decode AUTH_JSON_B64 env var into auth.json (for Nous OAuth tokens)
+if [ -n "$AUTH_JSON_B64" ]; then
+    echo "$AUTH_JSON_B64" | base64 -d > "$HERMES_HOME/auth.json" 2>/dev/null
+    echo "[entrypoint] auth.json decoded from AUTH_JSON_B64 env var"
+elif [ ! -f "$HERMES_HOME/auth.json" ]; then
+    # Try to copy from image if present
+    if [ -f "$INSTALL_DIR/auth.json" ]; then
+        cp "$INSTALL_DIR/auth.json" "$HERMES_HOME/auth.json"
+    fi
 fi
 
 # Sync bundled skills
