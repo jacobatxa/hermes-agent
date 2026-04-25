@@ -22,16 +22,16 @@ if [ ! -f "$HERMES_HOME/.env" ]; then
     cp "$INSTALL_DIR/.env.example" "$HERMES_HOME/.env" 2>/dev/null || true
 fi
 
-# Decode AUTH_JSON_B64 env var into auth.json (for Nous OAuth tokens)
-if [ -n "$AUTH_JSON_B64" ]; then
-    echo "$AUTH_JSON_B64" | base64 -d > "$HERMES_HOME/auth.json" 2>/dev/null
-    echo "[entrypoint] auth.json decoded from AUTH_JSON_B64 env var"
-elif [ ! -f "$HERMES_HOME/auth.json" ]; then
-    # Try to copy from image if present
-    if [ -f "$INSTALL_DIR/auth.json" ]; then
-        cp "$INSTALL_DIR/auth.json" "$HERMES_HOME/auth.json"
-    fi
-fi
+# Decode AUTH_JSON_B64: DISABLED — switched to DeepSeek (no OAuth tokens needed)
+# Kept for reference; re-enable if Nous OAuth is needed again
+# if [ -n "$AUTH_JSON_B64" ]; then
+#     echo "$AUTH_JSON_B64" | base64 -d > "$HERMES_HOME/auth.json" 2>/dev/null
+#     echo "[entrypoint] auth.json decoded from AUTH_JSON_B64 env var"
+# elif [ ! -f "$HERMES_HOME/auth.json" ]; then
+#     if [ -f "$INSTALL_DIR/auth.json" ]; then
+#         cp "$INSTALL_DIR/auth.json" "$HERMES_HOME/auth.json"
+#     fi
+# fi
 
 # Sync bundled skills
 if [ -d "$INSTALL_DIR/skills" ]; then
