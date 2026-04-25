@@ -4,9 +4,9 @@
 # Enable them only if you mount additional volumes
 
 model:
-  default: "xiaomi/mimo-v2-pro"
-  provider: "nous"
-  base_url: "https://inference-api.nousresearch.com/v1"
+  default: "deepseek-v4-pro"
+  provider: "deepseek"
+  base_url: "https://api.deepseek.com"
 
 agent:
   max_turns: 90

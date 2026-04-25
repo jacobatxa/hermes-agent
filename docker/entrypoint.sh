@@ -60,10 +60,10 @@ elif [ ! -f "$HERMES_HOME/config.yaml" ]; then
     cp "$INSTALL_DIR/cli-config.yaml.example" "$HERMES_HOME/config.yaml"
 fi
 
-# Auth: decode AUTH_JSON_B64 env var into auth.json (for OAuth providers like Nous)
-if [ -n "$AUTH_JSON_B64" ] && [ ! -f "$HERMES_HOME/auth.json" ]; then
-    echo "$AUTH_JSON_B64" | base64 -d > "$HERMES_HOME/auth.json" 2>/dev/null || true
-fi
+# Auth: DISABLED - switched to DeepSeek (no OAuth needed)
+# if [ -n "$AUTH_JSON_B64" ] && [ ! -f "$HERMES_HOME/auth.json" ]; then
+#     echo "$AUTH_JSON_B64" | base64 -d > "$HERMES_HOME/auth.json" 2>/dev/null || true
+# fi
 
 # SOUL.md
 if [ ! -f "$HERMES_HOME/SOUL.md" ]; then

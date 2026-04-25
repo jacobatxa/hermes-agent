@@ -1,0 +1,41 @@
+{
+  "name": "hermes-feishu-gateway",
+  "build": {
+    "dockerfile": "zeabur-deploy/Dockerfile",
+    "context": "."
+  },
+  "service": {
+    "name": "hermes-gateway",
+    "variables": {
+      "FEISHU_APP_ID": {
+        "description": "飞书应用 App ID"
+      },
+      "FEISHU_APP_SECRET": {
+        "description": "飞书应用 App Secret",
+        "secret": true
+      },
+      "FEISHU_DOMAIN": {
+        "description": "飞书域名 (feishu 或 lark)",
+        "default": "feishu"
+      },
+      "FEISHU_CONNECTION_MODE": {
+        "description": "连接方式 (websocket 或 webhook)",
+        "default": "websocket"
+      },
+      "FEISHU_GROUP_POLICY": {
+        "description": "群聊策略 (open 或 closed)",
+        "default": "open"
+      },
+      "HERMES_HOME": {
+        "description": "Hermes 数据目录",
+        "default": "/opt/data"
+      }
+    },
+    "volumes": [
+      {
+        "mountPath": "/opt/data",
+        "size": "1GB"
+      }
+    ]
+  }
+}
