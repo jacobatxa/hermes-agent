@@ -106,6 +106,12 @@ if [ ! -f "$HERMES_HOME/auth.json" ] && [ -n "$HERMES_AUTH_JSON_BOOTSTRAP" ]; th
     chmod 600 "$HERMES_HOME/auth.json"
 fi
 
+# Ensure feishu/lark-oapi is available (lazy_deps needs pip/uv in the venv)
+if ! python3 -c "import lark_oapi" 2>/dev/null; then
+    echo "Installing feishu dependency (lark-oapi)..."
+    uv pip install --quiet "lark-oapi==1.5.3" 2>/dev/null || true
+fi
+
 # Sync bundled skills (manifest-based so user edits are preserved)
 if [ -d "$INSTALL_DIR/skills" ]; then
     python3 "$INSTALL_DIR/tools/skills_sync.py"
