@@ -75,11 +75,13 @@ if [ ! -f "$HERMES_HOME/.env" ]; then
     cp "$INSTALL_DIR/.env.example" "$HERMES_HOME/.env"
 fi
 
-# config.yaml — use zeabur-deploy config if available, always overwrite stale copies
-if [ -f "$INSTALL_DIR/zeabur-deploy/config.yaml" ]; then
-    cp "$INSTALL_DIR/zeabur-deploy/config.yaml" "$HERMES_HOME/config.yaml"
-elif [ ! -f "$HERMES_HOME/config.yaml" ]; then
-    cp "$INSTALL_DIR/cli-config.yaml.example" "$HERMES_HOME/config.yaml"
+# config.yaml — copy only if not already present on volume
+if [ ! -f "$HERMES_HOME/config.yaml" ]; then
+    if [ -f "$INSTALL_DIR/zeabur-deploy/config.yaml" ]; then
+        cp "$INSTALL_DIR/zeabur-deploy/config.yaml" "$HERMES_HOME/config.yaml"
+    else
+        cp "$INSTALL_DIR/cli-config.yaml.example" "$HERMES_HOME/config.yaml"
+    fi
 fi
 
 # Auth: DISABLED - switched to DeepSeek (no OAuth needed)

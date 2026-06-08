@@ -4,7 +4,7 @@
 # Enable them only if you mount additional volumes
 
 model:
-  default: "deepseek-v4-pro"
+  default: "deepseek-v4-flash"
   provider: "deepseek"
   base_url: "https://api.deepseek.com"
 
